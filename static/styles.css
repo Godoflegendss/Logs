@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+tr.error {
+    background-color: #ffebee; /* Light red for errors */
+}
+
+tr.warning {
+    background-color: #fff3e0; /* Light orange for warnings */
+}
+
+tr.info {
+    background-color: #e3f2fd; /* Light blue for info */
+}
+
+tr.critical {
+    background-color: #fce4ec; /* Light pink for critical */
+}
+
+a {
+    text-decoration: none;
+    color: #0366d6;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.event-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
