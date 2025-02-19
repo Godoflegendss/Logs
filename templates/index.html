@@ -8,6 +8,21 @@
 </head>
 <body>
     <h1>Windows Event Logs</h1>
+
+    <!-- Search and Filter Form -->
+    <form method="GET" action="/">
+        <input type="text" name="search" placeholder="Search by message or source" value="{{ search_query }}">
+        <select name="level">
+            <option value="">All Levels</option>
+            <option value="Error" {% if level_filter == "Error" %}selected{% endif %}>Error</option>
+            <option value="Warning" {% if level_filter == "Warning" %}selected{% endif %}>Warning</option>
+            <option value="Info" {% if level_filter == "Info" %}selected{% endif %}>Info</option>
+            <option value="Critical" {% if level_filter == "Critical" %}selected{% endif %}>Critical</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Event Logs Table -->
     <table>
         <thead>
             <tr>

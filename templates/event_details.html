@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Details</title>
+    <title>Event Timeline</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -13,9 +13,26 @@
         <p><strong>Event ID:</strong> {{ event.EventID }}</p>
         <p><strong>Source:</strong> {{ event.Source }}</p>
         <p><strong>Level:</strong> {{ event.Level }}</p>
-        <p><strong>Time Created (UTC):</strong> {{ event.TimeCreatedUTC }}</p>
+        <p><strong>Total Occurrences:</strong> {{ total_occurrences }}</p>
+        <p><strong>First Occurrence:</strong> {{ first_occurrence }}</p>
+        <p><strong>Last Occurrence:</strong> {{ last_occurrence }}</p>
         <p><strong>Message:</strong></p>
         <pre>{{ event.Message }}</pre>
+    </div>
+
+    <h2>Timeline of Occurrences</h2>
+    <div class="timeline">
+        {% for e in timeline_events %}
+        <div class="timeline-event {{ e.Level | lower }}">
+            <div class="timeline-date">{{ e.TimeCreatedUTC }}</div>
+            <div class="timeline-content">
+                <p><strong>Event ID:</strong> {{ e.EventID }}</p>
+                <p><strong>Source:</strong> {{ e.Source }}</p>
+                <p><strong>Level:</strong> {{ e.Level }}</p>
+                <p>{{ e.Message | truncate(100) }}</p>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% else %}
     <p>Event not found.</p>
