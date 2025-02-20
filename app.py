@@ -9,15 +9,29 @@ database = 'CustomMetadata'
 username = 'Login'
 password = 'Thechanger@123'
 connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-def get_event_logs(search_query=None, level_filter=None, limit=20, offset=0):
+
+def get_unique_servers():
+    try:
+        conn = pyodbc.connect(connection_string)
+        cursor = conn.cursor()
+        query = "SELECT DISTINCT ServerName FROM Windowseventlogs ORDER BY ServerName"
+        cursor.execute(query)
+        servers = [row.ServerName for row in cursor.fetchall()]
+        conn.close()
+        return servers
+    except Exception as e:
+        print(f"Error fetching unique servers: {e}")
+        return []
+
+def get_event_logs(search_query=None, level_filter=None, server_filter=None, limit=20, offset=0):
     try:
         conn = pyodbc.connect(connection_string)
         cursor = conn.cursor()
 
         # Base query
         query = """
-            SELECT RecordID, EventID, LogName, Source, Message, TimeCreatedUTC, Level 
-            FROM WindowsEventlogs 
+            SELECT RecordID, EventID, LogName, Source, Message, TimeCreatedUTC, Level, ServerName 
+            FROM Windowseventlogs 
             WHERE 1=1
         """
 
@@ -26,6 +40,8 @@ def get_event_logs(search_query=None, level_filter=None, limit=20, offset=0):
             query += " AND (Message LIKE ? OR Source LIKE ?)"
         if level_filter:
             query += " AND Level = ?"
+        if server_filter:
+            query += " AND ServerName = ?"
 
         query += " ORDER BY TimeCreatedUTC DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
 
@@ -35,6 +51,8 @@ def get_event_logs(search_query=None, level_filter=None, limit=20, offset=0):
             params.extend([f"%{search_query}%", f"%{search_query}%"])
         if level_filter:
             params.append(level_filter)
+        if server_filter:
+            params.append(server_filter)
         params.extend([offset, limit])
 
         cursor.execute(query, params)
@@ -50,6 +68,7 @@ def index():
     # Get search, filter, and pagination parameters from the request
     search_query = request.args.get('search', default=None)
     level_filter = request.args.get('level', default=None)
+    server_filter = request.args.get('server', default=None)
     limit = int(request.args.get('limit', default=20))
     page = int(request.args.get('page', default=1))
 
@@ -57,12 +76,18 @@ def index():
     offset = (page - 1) * limit
 
     # Fetch logs with filters and pagination applied
-    logs = get_event_logs(search_query, level_filter, limit, offset)
+    logs = get_event_logs(search_query, level_filter, server_filter, limit, offset)
+
+    # Fetch unique server names for the filter dropdown
+    servers = get_unique_servers()
+
     return render_template(
         'index.html', 
         logs=logs, 
         search_query=search_query, 
         level_filter=level_filter,
+        server_filter=server_filter,
+        servers=servers,
         limit=limit,
         page=page
     )
@@ -74,14 +99,14 @@ def event_details(record_id):
         cursor = conn.cursor()
 
         # Fetch the clicked event
-        cursor.execute("SELECT * FROM WindowsEventlogs WHERE RecordID = ?", (record_id,))
+        cursor.execute("SELECT * FROM Windowseventlogs WHERE RecordID = ?", (record_id,))
         event = cursor.fetchone()
 
         if event:
             # Fetch all occurrences of similar events (same EventID and Source)
             cursor.execute("""
                 SELECT * 
-                FROM WindowsEventlogs 
+                FROM Windowseventlogs 
                 WHERE EventID = ? AND Source = ? 
                 ORDER BY TimeCreatedUTC DESC
             """, (event.EventID, event.Source))

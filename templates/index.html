@@ -19,6 +19,12 @@
             <option value="Info" {% if level_filter == "Info" %}selected{% endif %}>Info</option>
             <option value="Critical" {% if level_filter == "Critical" %}selected{% endif %}>Critical</option>
         </select>
+        <select name="server">
+            <option value="">All Servers</option>
+            {% for server in servers %}
+            <option value="{{ server }}" {% if server_filter == server %}selected{% endif %}>{{ server }}</option>
+            {% endfor %}
+        </select>
         <input type="number" name="limit" placeholder="Number of logs" value="{{ limit }}" min="1" max="100">
         <button type="submit">Search</button>
     </form>
@@ -30,6 +36,7 @@
                 <th>Event ID</th>
                 <th>Source</th>
                 <th>Level</th>
+                <th>Server</th>
                 <th>Time Created (UTC)</th>
                 <th>Message</th>
             </tr>
@@ -40,6 +47,7 @@
                 <td>{{ log.EventID }}</td>
                 <td>{{ log.Source }}</td>
                 <td>{{ log.Level }}</td>
+                <td>{{ log.ServerName }}</td>
                 <td>{{ log.TimeCreatedUTC }}</td>
                 <td><a href="{{ url_for('event_details', record_id=log.RecordID) }}">{{ log.Message | truncate(50) }}</a></td>
             </tr>
@@ -50,11 +58,11 @@
     <!-- Pagination -->
     <div class="pagination">
         {% if page > 1 %}
-        <a href="{{ url_for('index', search=search_query, level=level_filter, limit=limit, page=page-1) }}">Previous</a>
+        <a href="{{ url_for('index', search=search_query, level=level_filter, server=server_filter, limit=limit, page=page-1) }}">Previous</a>
         {% endif %}
         <span>Page {{ page }}</span>
         {% if logs|length == limit %}
-        <a href="{{ url_for('index', search=search_query, level=level_filter, limit=limit, page=page+1) }}">Next</a>
+        <a href="{{ url_for('index', search=search_query, level=level_filter, server=server_filter, limit=limit, page=page+1) }}">Next</a>
         {% endif %}
     </div>
 </body>
