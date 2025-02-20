@@ -3,10 +3,21 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f9f9f9;
+    color: #333;
 }
 
 h1 {
-    color: #333;
+    color: #0366d6;
+    margin-bottom: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #0366d6;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /* Search and Filter Form */
@@ -15,13 +26,16 @@ form {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-input[type="text"], select {
+input[type="text"], select, input[type="number"] {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    flex: 1;
+    min-width: 200px;
 }
 
 button {
@@ -75,13 +89,47 @@ tr.critical {
     background-color: #fce4ec; /* Light pink for critical */
 }
 
-a {
-    text-decoration: none;
-    color: #0366d6;
+/* Pagination Styling */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-a:hover {
-    text-decoration: underline;
+.pagination a {
+    padding: 8px 12px;
+    background-color: #0366d6;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}
+
+/* Event Details Styling */
+.event-details {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.event-details p {
+    margin: 10px 0;
+}
+
+.event-details pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 /* Timeline Styling */
@@ -124,4 +172,19 @@ a:hover {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #eee;
+}
+
+/* Back Link Styling */
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 12px;
+    background-color: #0366d6;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    background-color: #0056b3;
 }
